@@ -31,6 +31,7 @@ class SessionManager private constructor(context: Context) {
         private const val KEY_PERFIL_COMPLETADO = "perfilCompletado"
         private const val KEY_DIAGNOSTICO_COMPLETADO = "diagnosticoCompletado"
         private const val KEY_DISPOSITIVO_VINCULADO = "dispositivoVinculado"
+        private const val KEY_PRIMER_PULSO = "primerPulso"
     }
 
     fun guardarSesion(
@@ -43,11 +44,6 @@ class SessionManager private constructor(context: Context) {
         idLicencia: String
     ) {
         prefs.edit()
-            // Los datos clínicos pertenecen a la sesión anterior y no deben heredarse.
-            .remove(KEY_PACIENTE_ID)
-            .remove(KEY_PERFIL_COMPLETADO)
-            .remove(KEY_DIAGNOSTICO_COMPLETADO)
-            .remove(KEY_DISPOSITIVO_VINCULADO)
             .putString(KEY_TOKEN, token)
             .putString(KEY_USUARIO_ID, usuarioId)
             .putString(KEY_NOMBRE, nombre)
@@ -105,6 +101,16 @@ class SessionManager private constructor(context: Context) {
 
     fun isDispositivoVinculado(): Boolean {
         return prefs.getBoolean(KEY_DISPOSITIVO_VINCULADO, false)
+    }
+
+    fun guardarPrimerPulsoSiNoExiste(pulso: Int) {
+        if (!prefs.contains(KEY_PRIMER_PULSO)) {
+            prefs.edit().putInt(KEY_PRIMER_PULSO, pulso).apply()
+        }
+    }
+
+    fun getPrimerPulso(): Int? {
+        return if (prefs.contains(KEY_PRIMER_PULSO)) prefs.getInt(KEY_PRIMER_PULSO, 0) else null
     }
 
     fun isLoggedIn(): Boolean = prefs.getBoolean(KEY_IS_LOGGED_IN, false)

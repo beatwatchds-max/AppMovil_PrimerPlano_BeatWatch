@@ -143,12 +143,14 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    when {
-                        !esPaciente(body?.rol) -> {
-                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                            finish()
-                        }
+                    if (!body?.rol.equals("Paciente", ignoreCase = true)) {
+                        Log.d("LOGIN_FLOW", "Rol sin registro de perfil móvil -> MainActivity")
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                        return@launch
+                    }
 
+                    when {
                         !perfilCompletado -> {
                             Log.d("LOGIN_FLOW", "Perfil no completado -> RegistroPacienteActivity")
                             startActivity(Intent(this@LoginActivity, RegistroPacienteActivity::class.java))
@@ -205,7 +207,4 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun esPaciente(rol: String?): Boolean =
-        rol.equals("Paciente", ignoreCase = true)
 }
